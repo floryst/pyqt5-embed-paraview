@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MyWindow</class>
+ <widget class="QMainWindow" name="MyWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1280</width>
+    <height>1024</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Hello, World!</string>
+  </property>
+
+     <widget class="pqTabbedMultiViewWidget" name="tabbedMultiViewWidget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>3</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>200</width>
+        <height>200</height>
+       </size>
+      </property>
+     </widget>
+
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+
+ <customwidgets>
+  <customwidget>
+   <class>pqTabbedMultiViewWidget</class>
+   <extends>QWidget</extends>
+   <header>pqTabbedMultiViewWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+
+ <resources>
+  <include location="resources.qrc"/>
+  <include location="../ParaView3/ParaView/Qt/Components/Resources/pqComponents.qrc"/>
+  <include location="../ParaView3/ParaView/Qt/Core/Resources/pqCore.qrc"/>
+  <include location="../ParaView3/ParaView/Qt/Widgets/Resources/QtWidgets.qrc"/>
+ </resources>
+ <connections/>
+</ui>

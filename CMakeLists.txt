@@ -1,0 +1,131 @@
+cmake_minimum_required(VERSION 2.6)
+
+project(libfoo)
+
+# Find includes in the build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+# Turn on automatic invocation of the MOC
+set(CMAKE_AUTOMOC ON)
+
+# There may be a way to tell up front if Qt5 is going to be found, but I haven't found
+# a foolproof way to do it yet, so settle for the default error message for now.
+#if(NOT CMAKE_PREFIX_PATH AND NOT Qt5Widgets_DIR)
+#    message(WARNING "CMAKE_PREFIX_PATH is not defined, so find_package may not work. Set the CMAKE_PREFIX_PATH "
+#            "environment variable to the install prefix of Qt 5, either on the command line as "
+#            "-DCMAKE_PREFIX_PATH=\"path/to/Qt5/lib/cmake\" or with set(CMAKE_PREFIX_PATH path/to/Qt5/lib/cmake)")
+#endif(NOT CMAKE_PREFIX_PATH AND NOT Qt5Widgets_DIR)
+
+# Add a compiler flag
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+
+# Make this a GUI application on Windows
+if(WIN32)
+  set(CMAKE_WIN32_EXECUTABLE ON)
+endif()
+
+# Find the QtWidgets library
+find_package(Qt5Widgets REQUIRED)
+
+# find paraview
+find_package(ParaView REQUIRED)
+
+# find opengl
+find_package(OpenGL REQUIRED)
+
+## PARAVIEW/ITK
+
+if(NOT PARAVIEW_BUILD_QT_GUI)
+  message(FATAL_ERROR
+    "libfoo requires PARAVIEW_BUILD_QT_GUI to be enabled. "
+    "Please rebuild ParaView with PARAVIEW_BUILD_QT_GUI set to TRUE.")
+endif()
+if(NOT PARAVIEW_ENABLE_PYTHON)
+  message(FATAL_ERROR
+    "libfoo requires PARAVIEW_ENABLE_PYTHON to be enabled. "
+    "Please rebuild ParaView with PARAVIEW_ENABLE_PYTHON set to TRUE.")
+endif()
+if(NOT PARAVIEW_QT_VERSION STREQUAL "5")
+  message(FATAL_ERROR
+    "libfoo requires PARAVIEW_QT_VERSION to be 5, please rebuild ParaView.")
+endif()
+
+# Most of the time we don't want to skip these checks, default to off.
+option(SKIP_PARAVIEW_ITK_PYTHON_CHECKS
+  "Run checks to ensure ParaView and ITK are build against the same Python"
+  OFF)
+mark_as_advanced(SKIP_PARAVIEW_ITK_PYTHON_CHECKS)
+
+# Most of the time we don't want to skip these checks, default to off.
+option(SKIP_PARAVIEW_ITK_PYTHON_CHECKS
+  "Run checks to ensure ParaView and ITK are build against the same Python"
+  OFF)
+mark_as_advanced(SKIP_PARAVIEW_ITK_PYTHON_CHECKS)
+
+find_package(ITK 4.9)
+if(ITK_FOUND AND NOT SKIP_PARAVIEW_ITK_PYTHON_CHECKS)
+  message(STATUS "Checking ParaView and ITK were built against the same Python")
+  if(NOT ITK_WRAP_PYTHON)
+    message(FATAL_ERROR
+      "libfoo requires ITK_WRAP_PYTHON to be enabled. "
+      "Please rebuild ITK with ITK_WRAP_PYTHON set to TRUE.")
+  endif()
+
+  # Verify that the ITK build is using the same Python as the ParaView build
+  load_cache(${ITK_DIR}
+    READ_WITH_PREFIX ITK_
+    PYTHON_INCLUDE_DIR PYTHON_LIBRARY
+  )
+  load_cache(${ParaView_DIR}
+    READ_WITH_PREFIX ParaView_
+    PYTHON_INCLUDE_DIR PYTHON_LIBRARY
+  )
+
+  if (NOT ITK_PYTHON_INCLUDE_DIR STREQUAL ParaView_PYTHON_INCLUDE_DIR)
+    message(FATAL_ERROR
+      "The Python include directory is not the same for both ParaView and ITK. "
+      "Please ensure ParaView and ITK are being built against the same Python. "
+      "ParaView Python include directory: ${ParaView_PYTHON_INCLUDE_DIR}, "
+      "ITK Python include directory: ${ITK_PYTHON_INCLUDE_DIR}"
+    )
+  endif()
+
+  if (NOT ITK_PYTHON_LIBRARY STREQUAL ParaView_PYTHON_LIBRARY)
+    message(FATAL_ERROR
+      "The Python library is not the same for both ParaView and ITK. "
+      "Please ensure ParaView and ITK are being built against the same Python. "
+      "ParaView Python library: ${ParaView_PYTHON_LIBRARY}, "
+      "ITK Python include directory: ${ITK_PYTHON_LIBRARY}"
+    )
+  endif()
+endif()
+
+## END PARAVIEW/ITK
+
+include_directories(SYSTEM
+  ${Qt5Widgets_INCLUDE_DIRS}
+  ${PARAVIEW_INCLUDE_DIRS})
+
+# Generate code from ui files
+qt5_wrap_ui(UI_HEADERS mywindow.ui)
+
+# Generate rules for building source files from the resources
+qt5_add_resources(QRCS resources.qrc)
+
+# create the runner executable
+add_executable(runner main.cpp foo.cpp ${UI_HEADERS} ${QRCS})
+
+# library
+add_library(libfoo SHARED foo.cpp ${UI_HEADERS} ${QSRCS})
+set_target_properties(libfoo PROPERTIES PREFIX "")
+
+# Add the libraries to link against libfoo
+target_link_libraries(libfoo
+  PUBLIC
+    Qt5::Widgets
+    ${OPENGL_LIBRARIES}
+    pqApplicationComponents
+    vtkPVServerManagerRendering
+    vtkglew)
+
+target_link_libraries(runner libfoo)
