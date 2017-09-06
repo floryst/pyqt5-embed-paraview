@@ -14,6 +14,7 @@ SIP_ROOT=$HOME/pyqt5.8env/
 ## Don't change these variables!
 ROOT_DIR=$(dirname "$(readlink -f "$0")")
 BUILD_DIR=$ROOT_DIR/build
+DIST_DIR=$ROOT_DIR/dist
 
 mcd() {
   mkdir -p "$1" && cd "$1"
@@ -53,3 +54,8 @@ cp $ROOT_DIR/pvpy/Makefile $BUILD_DIR/pvpy
 libpvwidget_libdir=$BUILD_DIR/libpvwidget
 includes="-I$SIP_ROOT/include/python2.7 -I$ROOT_DIR/pvwidget"
 make PVWIDGET_LIBDIR="$libpvwidget_libdir" QT_ROOT="$QT_ROOT" CPP_INCLUDES="$includes"
+
+## copy to dist
+mcd $DIST_DIR
+cp $BUILD_DIR/libpvwidget/libpvwidget.so $DIST_DIR
+cp $BUILD_DIR/pvpy/pvpy.so $DIST_DIR
