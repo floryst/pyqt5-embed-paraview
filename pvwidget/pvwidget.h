@@ -1,27 +1,27 @@
-#ifndef _FOO_H
-#define _FOO_H
+#ifndef _PVWIDGET_H
+#define _PVWIDGET_H
 
 #include <QtCore>
 #include <QMainWindow>
 
 namespace Ui {
-class MyWindow;
+class PVWidget;
 }
 
 class pqPVApplicationCore;
 
-class MyWindow : public QMainWindow
+class PVWidget : public QMainWindow
 {
   Q_OBJECT
 
 public:
-    explicit MyWindow(QWidget* parent = 0);
-    ~MyWindow();
+    explicit PVWidget(QWidget* parent = 0);
+    ~PVWidget();
 
     int squared(int x);
 
 private:
-    Ui::MyWindow *ui;
+    Ui::PVWidget *ui;
 
     pqPVApplicationCore* pvAppCore;
 };
