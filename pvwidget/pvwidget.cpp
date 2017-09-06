@@ -14,7 +14,7 @@
 #include <vtkObjectFactory.h>
 
 #include "pvwidget.h"
-#include "ui_mywindow.h"
+#include "ui_pvwidget.h"
 
 #include <clocale>
 
