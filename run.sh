@@ -18,6 +18,7 @@ pythonpaths=(
   $ROOT_DIR/dist
 
   ## If using a custom compiled paraview, uncomment and edit these lines
+  /path/to/paraview-build/lib
   /path/to/paraview-build/lib/site-packages
 )
 
