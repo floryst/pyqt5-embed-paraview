@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
-project(libfoo)
+project(libpvwidget)
 
 # Find includes in the build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -37,17 +37,17 @@ find_package(OpenGL REQUIRED)
 
 if(NOT PARAVIEW_BUILD_QT_GUI)
   message(FATAL_ERROR
-    "libfoo requires PARAVIEW_BUILD_QT_GUI to be enabled. "
+    "libpvwidget requires PARAVIEW_BUILD_QT_GUI to be enabled. "
     "Please rebuild ParaView with PARAVIEW_BUILD_QT_GUI set to TRUE.")
 endif()
 if(NOT PARAVIEW_ENABLE_PYTHON)
   message(FATAL_ERROR
-    "libfoo requires PARAVIEW_ENABLE_PYTHON to be enabled. "
+    "libpvwidget requires PARAVIEW_ENABLE_PYTHON to be enabled. "
     "Please rebuild ParaView with PARAVIEW_ENABLE_PYTHON set to TRUE.")
 endif()
 if(NOT PARAVIEW_QT_VERSION STREQUAL "5")
   message(FATAL_ERROR
-    "libfoo requires PARAVIEW_QT_VERSION to be 5, please rebuild ParaView.")
+    "libpvwiget requires PARAVIEW_QT_VERSION to be 5, please rebuild ParaView.")
 endif()
 
 ## END PARAVIEW
@@ -59,18 +59,14 @@ include_directories(SYSTEM
 # Generate code from ui files
 qt5_wrap_ui(UI_HEADERS mywindow.ui)
 
-# Generate rules for building source files from the resources
-qt5_add_resources(QRCS resources.qrc)
-
 # create the runner executable
-add_executable(runner main.cpp foo.cpp ${UI_HEADERS} ${QRCS})
+add_executable(runner main.cpp pvwidget.cpp ${UI_HEADERS} ${QRCS})
 
 # library
-add_library(libfoo SHARED foo.cpp ${UI_HEADERS} ${QSRCS})
-set_target_properties(libfoo PROPERTIES PREFIX "")
+add_library(libpvwidget SHARED pvwidget.cpp ${UI_HEADERS} ${QSRCS})
+set_target_properties(libpvwidget PROPERTIES PREFIX "")
 
-# Add the libraries to link against libfoo
-target_link_libraries(libfoo
+target_link_libraries(libpvwidget
   PUBLIC
     Qt5::Widgets
     ${OPENGL_LIBRARIES}
@@ -78,4 +74,4 @@ target_link_libraries(libfoo
     vtkPVServerManagerRendering
     vtkglew)
 
-target_link_libraries(runner libfoo)
+target_link_libraries(runner libpvwidget)

@@ -13,37 +13,37 @@
 #include <vtkNew.h>
 #include <vtkObjectFactory.h>
 
-#include "foo.h"
+#include "pvwidget.h"
 #include "ui_mywindow.h"
 
 #include <clocale>
 
 // We need to override the default options to enable streaming by default.
 // Streaming needs to be enabled for the dax representations
-class FooOptions : public pqOptions
+class PVWidgetOptions : public pqOptions
 {
 public:
-  static FooOptions* New();
-  vtkTypeMacro(FooOptions, pqOptions) int GetEnableStreaming() override
+  static PVWidgetOptions* New();
+  vtkTypeMacro(PVWidgetOptions, pqOptions) int GetEnableStreaming() override
   {
     return 1;
   }
 
 protected:
-  FooOptions() : pqOptions() { ; }
+  PVWidgetOptions() : pqOptions() { ; }
 };
-vtkStandardNewMacro(FooOptions)
+vtkStandardNewMacro(PVWidgetOptions)
 
-MyWindow::MyWindow(QWidget *parent) :
+PVWidget::PVWidget(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MyWindow)
+    ui(new Ui::PVWidget)
 {
     int argc = 1;
-    char arg0[] = "foo";
+    char arg0[] = "pvwidget";
     char* argv[] = { &arg0[0], NULL };
 
     setlocale(LC_NUMERIC, "C");
-    vtkNew<FooOptions> options;
+    vtkNew<PVWidgetOptions> options;
     pvAppCore = new pqPVApplicationCore(argc, argv, options.Get());
 
     ui->setupUi(this);
@@ -61,13 +61,13 @@ MyWindow::MyWindow(QWidget *parent) :
     pqApplicationCore::instance()->loadConfigurationXML("<xml/>");
 }
 
-MyWindow::~MyWindow()
+PVWidget::~PVWidget()
 {
     delete ui;
     delete pvAppCore;
 }
 
-int MyWindow::squared(int x)
+int PVWidget::squared(int x)
 {
   return x * x;
 }
