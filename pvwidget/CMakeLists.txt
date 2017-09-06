@@ -57,7 +57,7 @@ include_directories(SYSTEM
   ${PARAVIEW_INCLUDE_DIRS})
 
 # Generate code from ui files
-qt5_wrap_ui(UI_HEADERS mywindow.ui)
+qt5_wrap_ui(UI_HEADERS pvwidget.ui)
 
 # create the runner executable
 add_executable(runner main.cpp pvwidget.cpp ${UI_HEADERS} ${QRCS})
