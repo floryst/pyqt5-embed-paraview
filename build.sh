@@ -33,7 +33,6 @@ export LD_LIBRARY_PATH=$QT_ROOT/lib/:${LD_LIBRARY_PATH}
 # include paraview
 export CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:$PARAVIEW_ROOT/lib/cmake/
 export PATH=$PARAVIEW_ROOT/bin:${PATH}
-export LD_LIBRARY_PATH=$PARAVIEW_ROOT/lib/:${LD_LIBRARY_PATH}
 
 cmake \
   -DQT5_DIR=$QT_ROOT \
