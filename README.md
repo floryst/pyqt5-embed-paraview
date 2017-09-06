@@ -41,9 +41,6 @@ to be installed at `/home/kwuser/Qt/`.
 
 ### ParaView
 
-
-## ParaView
-
 It is recommended that you use the ParaView superbuild, found here:
 <https://gitlab.kitware.com/paraview/paraview-superbuild>
 If you use the superbuild, be sure to enable Qt and Python.
